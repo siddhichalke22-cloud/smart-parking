@@ -102,23 +102,23 @@ async function driverMenu() {
 
     if (choice === "1") {
 
-        const zones = parkingService.getZones();
+    const name = await ask("Zone name: ");
+    const location = await ask("Location: ");
+    const totalSpots = await ask("Number of spots: ");
+    const price = await ask("Price per hour: ₹");
 
-        console.log("\nPARKING ZONES");
+    const zone = parkingService.addZone(
+        name,
+        location,
+        totalSpots,
+        price
+    );
 
-        zones.forEach(zone => {
-            console.log(
-                zone.id,
-                "|",
-                zone.name,
-                "|",
-                zone.location,
-                "| ₹" + zone.price
-            );
-        });
+    console.log("\nZone added successfully!");
+    console.log("Zone ID:", zone.id);
 
-        await driverMenu();
-    }
+    await adminMenu();
+}
 
     else if (choice === "2") {
 
@@ -225,23 +225,23 @@ async function adminMenu() {
 
     if (choice === "1") {
 
-        const name = await ask("Zone name: ");
-        const location = await ask("Location: ");
-        const totalSpots = await ask("Number of spots: ");
-        const price = await ask("Price per hour: ₹");
+    const zones = parkingService.getZones();
 
-        const zone = parkingService.addZone(
-            name,
-            location,
-            totalSpots,
-            price
+    console.log("\nPARKING ZONES");
+
+    zones.forEach(zone => {
+        console.log(
+            zone.id,
+            "|",
+            zone.name,
+            "|",
+            zone.location,
+            "| ₹" + zone.price
         );
+    });
 
-        console.log("\nZone added!");
-        console.log("Zone ID:", zone.id);
-
-        await adminMenu();
-    }
+    await driverMenu();
+}
 
     else if (choice === "2") {
 

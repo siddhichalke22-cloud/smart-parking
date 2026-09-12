@@ -1,1 +1,23 @@
-[]
+[
+  {
+    "id": 1789240464302,
+    "name": "siddhi",
+    "phone": "8347839332",
+    "password": "sidgehwl",
+    "role": "driver"
+  },
+  {
+    "id": 1789240520743,
+    "name": "siidhi",
+    "phone": "9370107945",
+    "password": "siddhi@22",
+    "role": "driver"
+  },
+  {
+    "id": 1789240829382,
+    "name": "siddhi",
+    "phone": "0370107945",
+    "password": "siddhi@22",
+    "role": "driver"
+  }
+]
