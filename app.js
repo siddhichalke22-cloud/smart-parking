@@ -8,6 +8,8 @@ const analyticsService = require("./services/analyticsService");
 
 let currentUser = null;
 
+
+
 async function mainMenu() {
 
     console.log("\n==============================");
@@ -23,18 +25,23 @@ async function mainMenu() {
     if (choice === "1") {
         await register();
     }
+
     else if (choice === "2") {
         await login();
     }
+
     else if (choice === "3") {
         console.log("Thank you!");
         closeInput();
     }
+
     else {
         console.log("Invalid choice!");
         await mainMenu();
     }
 }
+
+
 
 async function register() {
 
@@ -54,12 +61,15 @@ async function register() {
     if (success) {
         console.log("Registration successful!");
     }
+
     else {
         console.log("Phone already registered!");
     }
 
     await mainMenu();
 }
+
+
 
 async function login() {
 
@@ -83,10 +93,12 @@ async function login() {
     if (user.role === "admin") {
         await adminMenu();
     }
+
     else {
         await driverMenu();
     }
 }
+
 
 async function driverMenu() {
 
@@ -100,45 +112,74 @@ async function driverMenu() {
 
     const choice = await ask("Enter your choice: ");
 
+
+
     if (choice === "1") {
 
-    const name = await ask("Zone name: ");
-    const location = await ask("Location: ");
-    const totalSpots = await ask("Number of spots: ");
-    const price = await ask("Price per hour: ₹");
+        const zones = parkingService.getZones();
 
-    const zone = parkingService.addZone(
-        name,
-        location,
-        totalSpots,
-        price
-    );
+        console.log("\n========== PARKING ZONES ==========");
 
-    console.log("\nZone added successfully!");
-    console.log("Zone ID:", zone.id);
+        if (zones.length === 0) {
 
-    await adminMenu();
-}
+            console.log("No parking zones available.");
+
+        }
+
+        else {
+
+            zones.forEach(zone => {
+
+                console.log(
+                    "ID:", zone.id,
+                    "| Name:", zone.name,
+                    "| Location:", zone.location,
+                    "| Spots:", zone.totalSpots,
+                    "| Price: ₹" + zone.price
+                );
+
+            });
+
+        }
+
+        await ask("\nPress Enter to return to Driver Menu...");
+
+        await driverMenu();
+    }
+
+
 
     else if (choice === "2") {
 
         const spots = parkingService.getAvailableSpots();
 
-        console.log("\nAVAILABLE SPOTS");
+        console.log("\n========== AVAILABLE SPOTS ==========");
 
-        spots.forEach(spot => {
-            console.log(
-                "Spot ID:",
-                spot.id,
-                "Zone:",
-                spot.zoneId,
-                "Spot:",
-                spot.spotNumber
-            );
-        });
+        if (spots.length === 0) {
+
+            console.log("No parking spots available.");
+
+        }
+
+        else {
+
+            spots.forEach(spot => {
+
+                console.log(
+                    "Spot ID:", spot.id,
+                    "| Zone:", spot.zoneId,
+                    "| Spot:", spot.spotNumber
+                );
+
+            });
+
+        }
+
+        await ask("\nPress Enter to return to Driver Menu...");
 
         await driverMenu();
     }
+
 
     else if (choice === "3") {
 
@@ -151,10 +192,24 @@ async function driverMenu() {
             hours
         );
 
-        console.log(result.message || "Reservation successful!");
+        console.log(
+            result.message || "Reservation successful!"
+        );
+
+        if (result.success) {
+
+            console.log(
+                "Reservation ID:",
+                result.reservation.id
+            );
+
+        }
+
+        await ask("\nPress Enter to continue...");
 
         await driverMenu();
     }
+
 
     else if (choice === "4") {
 
@@ -170,6 +225,8 @@ async function driverMenu() {
                 ? "Reservation cancelled!"
                 : "Reservation not found!"
         );
+
+        await ask("\nPress Enter to continue...");
 
         await driverMenu();
     }
@@ -190,11 +247,14 @@ async function driverMenu() {
             amount
         );
 
-        console.log("Payment successful!");
+        console.log("\nPayment successful!");
         console.log("Payment ID:", payment.id);
+
+        await ask("\nPress Enter to continue...");
 
         await driverMenu();
     }
+
 
     else if (choice === "6") {
 
@@ -203,6 +263,8 @@ async function driverMenu() {
         await mainMenu();
     }
 
+
+
     else {
 
         console.log("Invalid choice!");
@@ -210,6 +272,8 @@ async function driverMenu() {
         await driverMenu();
     }
 }
+
+
 
 async function adminMenu() {
 
@@ -223,62 +287,99 @@ async function adminMenu() {
 
     const choice = await ask("Enter your choice: ");
 
+
+
     if (choice === "1") {
 
-    const zones = parkingService.getZones();
+        const name = await ask("Zone name: ");
+        const location = await ask("Location: ");
+        const totalSpots = await ask("Number of spots: ");
+        const price = await ask("Price per hour: ₹");
 
-    console.log("\nPARKING ZONES");
-
-    zones.forEach(zone => {
-        console.log(
-            zone.id,
-            "|",
-            zone.name,
-            "|",
-            zone.location,
-            "| ₹" + zone.price
+        const zone = parkingService.addZone(
+            name,
+            location,
+            totalSpots,
+            price
         );
-    });
 
-    await driverMenu();
-}
+        console.log("\nZone added successfully!");
+        console.log("Zone ID:", zone.id);
+
+        await ask("\nPress Enter to continue...");
+
+        await adminMenu();
+    }
+
 
     else if (choice === "2") {
 
         const zones = parkingService.getZones();
 
-        console.log("\n========== ZONES ==========");
+        console.log("\n========== PARKING ZONES ==========");
 
-        zones.forEach(zone => {
-            console.log(
-                "ID:", zone.id,
-                "| Name:", zone.name,
-                "| Location:", zone.location,
-                "| Spots:", zone.totalSpots,
-                "| Price:", zone.price
-            );
-        });
+        if (zones.length === 0) {
+
+            console.log("No parking zones available.");
+
+        }
+
+        else {
+
+            zones.forEach(zone => {
+
+                console.log(
+                    "ID:", zone.id,
+                    "| Name:", zone.name,
+                    "| Location:", zone.location,
+                    "| Spots:", zone.totalSpots,
+                    "| Price: ₹" + zone.price
+                );
+
+            });
+
+        }
+
+        await ask("\nPress Enter to return to Admin Menu...");
 
         await adminMenu();
     }
+
+
 
     else if (choice === "3") {
 
         const spots = parkingService.getSpots();
 
-        console.log("\n========== SPOTS ==========");
+        console.log("\n========== PARKING SPOTS ==========");
 
-        spots.forEach(spot => {
-            console.log(
-                "ID:", spot.id,
-                "| Zone:", spot.zoneId,
-                "| Spot:", spot.spotNumber,
-                "| Status:", spot.status
-            );
-        });
+        if (spots.length === 0) {
+
+            console.log("No parking spots available.");
+
+        }
+
+        else {
+
+            spots.forEach(spot => {
+
+                console.log(
+                    "ID:", spot.id,
+                    "| Zone:", spot.zoneId,
+                    "| Spot:", spot.spotNumber,
+                    "| Status:", spot.status
+                );
+
+            });
+
+        }
+
+        await ask("\nPress Enter to return to Admin Menu...");
 
         await adminMenu();
     }
+
+
 
     else if (choice === "4") {
 
@@ -287,9 +388,30 @@ async function adminMenu() {
 
         console.log("\n========== RESERVATIONS ==========");
 
-        reservations.forEach(reservation => {
-            console.log(reservation);
-        });
+        if (reservations.length === 0) {
+
+            console.log("No reservations found.");
+
+        }
+
+        else {
+
+            reservations.forEach(reservation => {
+
+                console.log(
+                    "ID:", reservation.id,
+                    "| User:", reservation.userId,
+                    "| Spot:", reservation.spotId,
+                    "| Hours:", reservation.hours,
+                    "| Status:", reservation.status,
+                    "| Date:", reservation.date
+                );
+
+            });
+
+        }
+
+        await ask("\nPress Enter to return to Admin Menu...");
 
         await adminMenu();
     }
@@ -298,8 +420,12 @@ async function adminMenu() {
 
         analyticsService.showAnalytics();
 
+        await ask("\nPress Enter to return to Admin Menu...");
+
         await adminMenu();
     }
+
+
 
     else if (choice === "6") {
 
@@ -307,6 +433,8 @@ async function adminMenu() {
 
         await mainMenu();
     }
+
+
 
     else {
 
@@ -316,4 +444,7 @@ async function adminMenu() {
     }
 }
 
+
+
 mainMenu();
+

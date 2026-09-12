@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "id": 1789241198514,
+    "userId": 1789240520743,
+    "reservationId": "5",
+    "amount": null,
+    "status": "paid",
+    "date": "9/13/2026, 12:56:38 AM"
+  }
+]
